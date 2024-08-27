@@ -1,35 +1,58 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useEffect, useState } from "react";
+import Service from "./service/service";
+import "./App.css";
+import MovieRow from "./components/MovieRow";
+import FeaturedMovie from "./components/FeaturedMovie";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [movieList, setMovieList] = useState([]);
+  const [featuredData, setFeaturedData] = useState(null);
+  const [blackHeader, setBlackHeader] = useState(false);
+
+  useEffect(() => {
+    const loadAll = async () => {
+      let list = await Service.getHomeList();
+      setMovieList(list);
+
+      let originals = list.filter((i) => i.slug === "originals");
+      let randomChosen = Math.floor(
+        Math.random() * (originals[0].items.results.length - 1)
+      );
+      let chosen = originals[0].items.results[randomChosen];
+      let chosenInfo = await Service.getMovieInfo(chosen.id, "tv");
+      setFeaturedData(chosenInfo);
+    };
+    loadAll();
+  }, []);
+
+  useEffect(() => {
+    const scrollListener = () => {
+      if (window.scrollY > 10) {
+        setBlackHeader(true);
+      } else {
+        setBlackHeader(false);
+      }
+    };
+    window.addEventListener("scroll", scrollListener);
+    return () => {
+      window.removeEventListener("scroll", scrollListener);
+    };
+  }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="page">
+      <Header black={blackHeader} />
+      {featuredData && <FeaturedMovie item={featuredData} />}
+      <section className="lists">
+        {movieList.map((item, key) => (
+          <MovieRow key={key} title={item.title} items={item.items} />
+        ))}
+      </section>
+      <Footer />
+    </div>
+  );
 }
 
-export default App
+export default App;
