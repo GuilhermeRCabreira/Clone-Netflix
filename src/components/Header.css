@@ -32,3 +32,33 @@ header {
   border-radius: 3px;
   margin-right: 30px;
 }
+
+.header--search {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+.search-icon {
+  width: 20px; /* Ajuste o tamanho do ícone conforme necessário */
+  height: 20px;
+  cursor: pointer;
+  margin-right: 20px;
+}
+
+.search-input {
+  display: block;
+  width: 200px;
+  height: 30px;
+  background-color: rgba(0, 0, 0, 0.8);
+  border: 1px solid white;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  outline: none;
+  transition: width 0.3s ease;
+}
+
+.search-input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}

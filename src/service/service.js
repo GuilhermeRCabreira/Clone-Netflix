@@ -91,4 +91,11 @@ export default {
 
     return info;
   },
+  searchMovies: async (query) => {
+    return await basicFetch(
+      `/search/movie?query=${encodeURIComponent(
+        query
+      )}&language=pt-BR&api_key=${API_KEY}`
+    );
+  },
 };
